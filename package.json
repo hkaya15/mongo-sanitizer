@@ -1,6 +1,6 @@
 {
   "name": "mongo-sanitizer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "An Express.js middleware to prevent NoSQL injection attacks by sanitizing req.body, req.query, and req.params. Supports custom replacement and dot notation handling",
   "license": "MIT",
   "author": "Hüseyin Kaya",
