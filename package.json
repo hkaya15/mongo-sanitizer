@@ -1,0 +1,38 @@
+{
+  "name": "mongo-sanitizer",
+  "version": "1.0.0",
+  "description": "An Express.js middleware to prevent NoSQL injection attacks by sanitizing req.body, req.query, and req.params. Supports custom replacement and dot notation handling",
+  "license": "MIT",
+  "author": "Hüseyin Kaya",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "qs": "^6.x.x",
+    "lodash.clonedeep": "^4.x.x"
+  },
+  "devDependencies": {
+    "@types/express": "^5.x.x",
+    "@types/qs": "^6.x.x",
+    "@types/lodash.clonedeep": "^4.x.x",
+    "@types/node": "^22.x.x",
+    "typescript": "^5.x.x"
+  },
+  "keywords": [
+    "express",
+    "mongodb",
+    "nosql",
+    "injection",
+    "sanitizer",
+    "sanitize",
+    "middleware",
+    "security",
+    "typescript",
+    "dot-notation"
+  ]
+}
