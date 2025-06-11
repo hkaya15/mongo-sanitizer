@@ -169,7 +169,7 @@ function expressSanitize(options: MiddlewareOptions = {}) {
     next();
   };
 }
-
+//
 const sanitizer = expressSanitize;
 export default sanitizer;
 export { sanitize, has };
