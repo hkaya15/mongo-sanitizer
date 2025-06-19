@@ -8,8 +8,8 @@ import cloneDeep from 'lodash.clonedeep';
 
 // Definiert die Zeichen "$" und ".", die in NoSQL-Abfragen eine besondere Bedeutung haben.
 // Das Ersetzen dieser Zeichen verhindert unbeabsichtigte Abfrage-Manipulationen.
-const NO_SQL_CHARS_TO_REPLACE = /[\$\.]/g;
-
+const NO_SQL_CHARS_TO_REPLACE = /\$/g;
+const DOT_NO_SQL_CHARS_TO_REPLACE = /[\$\.]/g;
 /**
  * Checks if a value is a plain object (not an array, null, or other types).
  * This is crucial for recursively traversing only plain objects.
@@ -52,7 +52,7 @@ export function isPlainObject(val: any): val is Record<string, any> {
 // Ersetzt die Zeichen "$" und "." in Schlüsseln und Werten.
 export function _sanitize(
   obj: any,
-  options: { replaceWith?: string; dryRun?: boolean } = {}
+  options: { replaceWith?: string; dryRun?: boolean; allowDots?: boolean } = {}
 ) {
   const replaceWith =
     options.hasOwnProperty('replaceWith') &&
@@ -60,6 +60,7 @@ export function _sanitize(
       ? options.replaceWith
       : '_';
   const dryRun = options.dryRun || false;
+  const allowDots = options.allowDots || false;
   let hasSanitized = false;
 
   // Gelen değer bir string ise doğrudan temizler.
@@ -71,13 +72,15 @@ export function _sanitize(
   // Bereinigt die Eingabe direkt, falls es sich um einen String handelt.
   // Dies ist besonders wichtig für direkte String-Werte wie req.params.
   if (typeof obj === 'string') {
-    if (obj.match(NO_SQL_CHARS_TO_REPLACE)) {
+    const charRegex = allowDots
+      ? NO_SQL_CHARS_TO_REPLACE
+      : DOT_NO_SQL_CHARS_TO_REPLACE;
+
+    if (obj.match(charRegex)) {
       hasSanitized = true;
       return {
         isSanitized: hasSanitized,
-        target: dryRun
-          ? obj
-          : obj.replace(NO_SQL_CHARS_TO_REPLACE, replaceWith),
+        target: dryRun ? obj : obj.replace(charRegex, replaceWith),
       };
     }
     return { isSanitized: hasSanitized, target: obj };
@@ -121,9 +124,13 @@ export function _sanitize(
           let newKey = key;
           let val = current[key];
 
+          const keyCharRegex = allowDots
+            ? NO_SQL_CHARS_TO_REPLACE
+            : DOT_NO_SQL_CHARS_TO_REPLACE;
+
           // Sanitize key
-          if (key.match(NO_SQL_CHARS_TO_REPLACE)) {
-            newKey = key.replace(NO_SQL_CHARS_TO_REPLACE, replaceWith);
+          if (key.match(keyCharRegex)) {
+            newKey = key.replace(keyCharRegex, replaceWith);
             if (!dryRun) hasSanitized = true;
           }
 
@@ -131,13 +138,13 @@ export function _sanitize(
           if (isPlainObject(val) || Array.isArray(val)) {
             newObj[newKey] = _recursiveSanitize(val);
           } else if (typeof val === 'string') {
+            const valCharRegex = allowDots
+              ? NO_SQL_CHARS_TO_REPLACE
+              : DOT_NO_SQL_CHARS_TO_REPLACE;
             // Sanitize string values
-            if (val.match(NO_SQL_CHARS_TO_REPLACE)) {
+            if (val.match(valCharRegex)) {
               if (!dryRun) {
-                newObj[newKey] = val.replace(
-                  NO_SQL_CHARS_TO_REPLACE,
-                  replaceWith
-                );
+                newObj[newKey] = val.replace(valCharRegex, replaceWith);
                 hasSanitized = true;
               } else {
                 newObj[newKey] = val; // In dry run, return original
@@ -156,11 +163,14 @@ export function _sanitize(
         if (isPlainObject(item) || Array.isArray(item)) {
           return _recursiveSanitize(item);
         } else if (typeof item === 'string') {
+          const itemCharRegex = allowDots
+            ? NO_SQL_CHARS_TO_REPLACE
+            : DOT_NO_SQL_CHARS_TO_REPLACE;
           // Sanitize string values in arrays
-          if (item.match(NO_SQL_CHARS_TO_REPLACE)) {
+          if (item.match(itemCharRegex)) {
             if (!dryRun) {
               hasSanitized = true;
-              return item.replace(NO_SQL_CHARS_TO_REPLACE, replaceWith);
+              return item.replace(itemCharRegex, replaceWith);
             }
           }
           return item; // In dry run, or no match, return original
