@@ -91,6 +91,10 @@ const cleanedString = sanitize(maliciousString); // "user__name"
 const containsMalicious = has('price.$lt'); // true
 ```
 
+### ⚠️ WARNING: Potential Collisions When Using replaceWith: ''
+
+When using replaceWith: '' in the sanitizer middleware, there is a risk of key collisions and unexpected data changes.
+
 ---
 
 ## License
