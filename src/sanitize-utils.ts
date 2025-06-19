@@ -54,7 +54,11 @@ export function _sanitize(
   obj: any,
   options: { replaceWith?: string; dryRun?: boolean } = {}
 ) {
-  const replaceWith = options.replaceWith || '_';
+  const replaceWith =
+    options.hasOwnProperty('replaceWith') &&
+    typeof options.replaceWith === 'string'
+      ? options.replaceWith
+      : '_';
   const dryRun = options.dryRun || false;
   let hasSanitized = false;
 
