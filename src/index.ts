@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction, Application } from 'express'; // Application türü için
 import * as qs from 'qs';
 import { _sanitize, sanitize, has } from './sanitize-utils';
+import { SanitizedRequest } from './types'; 
 
 interface MiddlewareOptions {
   replaceWith?: string;
@@ -172,4 +173,4 @@ function expressSanitize(options: MiddlewareOptions = {}) {
 
 const sanitizer = expressSanitize;
 export default sanitizer;
-export { sanitize, has };
+export { sanitize, has, SanitizedRequest };
