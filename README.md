@@ -22,7 +22,7 @@ Apply mongo-sanitizer globally for most request data:
 
 ```javascript
 import express from 'express';
-import mongoSanitizer from 'mongo-sanitizer';
+import mongoSanitizer, { SanitizedRequest } from 'mongo-sanitizer';
 
 const app = express();
 app.use(express.json());
@@ -31,7 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 // Apply globally
 app.use(mongoSanitizer());
 
-app.post('/api/data', (req, res) => {
+app.post('/api/data', (req: SanitizedRequest, res) => {
   // Use sanitized data
   console.log('Sanitized Body:', req.sanitizedBody);
   res.json({ sanitizedData: req.sanitizedBody });
@@ -46,12 +46,12 @@ app.listen(3000, () => console.log('Server running on port 3000'));
 
 ```javascript
 import express from 'express';
-import mongoSanitizer from 'mongo-sanitizer';
+import mongoSanitizer, { SanitizedRequest } from 'mongo-sanitizer';
 
 const app = express();
 app.use(express.json());
 
-app.get('/api/users/:userId', mongoSanitizer(), (req, res) => {
+app.get('/api/users/:userId', mongoSanitizer(), (req: SanitizedRequest, res) => {
   // Use sanitized params
   console.log('Sanitized Params:', req.sanitizedParams);
   res.json({ sanitizedUserId: req.sanitizedParams?.userId });

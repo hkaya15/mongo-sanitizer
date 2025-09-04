@@ -1,3 +1,5 @@
+import { Request } from 'express';
+
 declare namespace Express {
   interface Request {
     // TypeScript'in Express Request objesine yeni özellikler eklemesini sağlar.
@@ -13,4 +15,11 @@ declare namespace Express {
     sanitizedParams?: Record<string, any>;
     sanitizedHeaders?: any;
   }
+}
+
+export interface SanitizedRequest extends Request {
+  sanitizedBody?: any;
+  sanitizedQuery?: any;
+  sanitizedParams?: Record<string, any>;
+  sanitizedHeaders?: any;
 }
